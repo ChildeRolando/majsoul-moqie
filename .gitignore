@@ -1,0 +1,5 @@
+tools/
+dist/
+**/bin/
+**/obj/
+**/__pycache__/

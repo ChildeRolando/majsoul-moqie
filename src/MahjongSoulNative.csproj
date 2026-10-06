@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <GameDirectory Condition="'$(GameDirectory)' == ''">D:\SteamLibrary\steamapps\common\MahjongSoul</GameDirectory>
+    <CoreDirectory>$(GameDirectory)\BepInEx\core</CoreDirectory>
+    <InteropDirectory>$(GameDirectory)\BepInEx\interop</InteropDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BepInEx.Core" HintPath="$(CoreDirectory)\BepInEx.Core.dll" Private="false" />
+    <Reference Include="BepInEx.Unity.IL2CPP" HintPath="$(CoreDirectory)\BepInEx.Unity.IL2CPP.dll" Private="false" />
+    <Reference Include="0Harmony" HintPath="$(CoreDirectory)\0Harmony.dll" Private="false" />
+    <Reference Include="Il2CppInterop.Runtime" HintPath="$(CoreDirectory)\Il2CppInterop.Runtime.dll" Private="false" />
+    <Reference Include="Assembly-CSharp-firstpass" HintPath="$(InteropDirectory)\Assembly-CSharp-firstpass.dll" Private="false" />
+    <Reference Include="Assembly-CSharp" HintPath="$(InteropDirectory)\Assembly-CSharp.dll" Private="false" />
+    <Reference Include="Il2Cppmscorlib" HintPath="$(InteropDirectory)\Il2Cppmscorlib.dll" Private="false" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(InteropDirectory)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="UnityEngine.InputLegacyModule" HintPath="$(InteropDirectory)\UnityEngine.InputLegacyModule.dll" Private="false" />
+    <EmbeddedResource Include="../lua/native-tsumogiri.lua" LogicalName="native-tsumogiri.lua" />
+  </ItemGroup>
+</Project>
