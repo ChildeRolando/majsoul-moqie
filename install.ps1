@@ -90,9 +90,11 @@ if (-not $LoaderArchive) {
     Invoke-WebRequest -Uri $loaderUrl -OutFile $LoaderArchive -UseBasicParsing -TimeoutSec 120
 }
 if (-not $PluginArchive) {
-    $PluginArchive = Join-Path $PSScriptRoot $assetName
+    # Remote script blocks have no PSScriptRoot; use the unique work directory.
+    $assetRoot = if ($PSScriptRoot) { $PSScriptRoot } else { $work }
+    $PluginArchive = Join-Path $assetRoot $assetName
     if (-not (Test-Path -LiteralPath $PluginArchive)) {
-        $PluginArchive = Join-Path $PSScriptRoot ('dist/' + $assetName)
+        $PluginArchive = Join-Path $assetRoot ('dist/' + $assetName)
     }
     if (-not (Test-Path -LiteralPath $PluginArchive)) {
         $PluginArchive = Join-Path $work $assetName

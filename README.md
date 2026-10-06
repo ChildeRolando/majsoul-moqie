@@ -10,6 +10,22 @@
 
 ## 一键安装
 
+先退出雀魂并完成退出确认，然后在 PowerShell 中粘贴这一行即可安装，**无需预先下载 Release、无需安装包管理器**：
+
+```powershell
+irm https://raw.githubusercontent.com/ChildeRolando/majsoul_moqie/main/install.ps1 | iex
+```
+
+这一行从公开仓库运行安装脚本，自动定位 Steam 雀魂、下载并校验 BepInEx 和插件，再放入游戏目录。已有配置保留。若需要指定游戏目录：
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/ChildeRolando/majsoul_moqie/main/install.ps1))) -GameDirectory "D:\SteamLibrary\steamapps\common\MahjongSoul"
+```
+
+也可以从 [Releases](https://github.com/ChildeRolando/majsoul_moqie/releases/tag/v0.3.0) 下载 `majsoul_moqie-setup-0.3.0.exe`，**双击即可安装，无需解压**。EXE 内嵌相同安装脚本，运行时联网下载加载器和插件；不需要安装 .NET SDK 或 Python。命令行执行时同样支持 `-GameDirectory`、`-WhatIf` 和离线压缩包参数。
+
+### 保留的 ZIP 安装方式
+
 1. 退出雀魂，完成退出确认。
 2. 从 [Releases](https://github.com/ChildeRolando/majsoul_moqie/releases/tag/v0.3.0) 下载 `native-tsumogiri-0.3.0-installer.zip`，解压到任意目录。
 3. 双击 `install.cmd`。脚本自动从 Steam 库定位雀魂，下载已验收的 BepInEx IL2CPP x86 build 788，并安装加载器和插件。
@@ -59,8 +75,10 @@ python -m pip install --target ./tools/python lupa
 python ./tests/test_native_tsumogiri.py
 dotnet run --project ./tests/SourcePatchChecks -- '<原始 buffer 目录>' './lua/native-tsumogiri.lua'
 ./build-package.ps1 -Tag '<新包标签>'
+./build-installer.ps1 # 使用 Windows 自带 .NET Framework 编译器生成 EXE 安装器
 # 安装器文件操作回归：使用真实的固定版本压缩包，在临时模拟游戏目录测试
 ./tests/test_install.ps1 -LoaderArchive '<BepInEx 788 压缩包>' -PluginArchive './dist/native-tsumogiri-0.3.0-release.zip'
+./tests/test_entrypoints.ps1 -LoaderArchive '<BepInEx 788 压缩包>' -PluginArchive '<原始发行包绝对路径>'
 ```
 
 SourcePatchChecks 使用本机诊断记录里的原始 ViewPai、Block_QiPai buffer；发行包不包含客户端 Lua 源码。重新构建的包需单独验收，不能继承现有 DLL 的人工验收。
