@@ -7,11 +7,42 @@
 - 默认开启；F8 开关并保存设置，重新开启会刷新已有弃牌。
 - F10 记录诊断快照。插件不读取屏幕、不模拟操作，不提供额外悬浮层。
 
-## 安装与卸载
+## 一键安装
 
-退出雀魂并完成退出确认。安装与客户端架构匹配的 [BepInEx IL2CPP Windows x86](https://builds.bepinex.dev/projects/bepinex_be)，本次验收使用 build 788。从 [Releases](https://github.com/ChildeRolando/majsoul_moqie/releases/tag/v0.3.0) 下载并解压 native-tsumogiri-0.3.0-release.zip，把其中 BepInEx 目录合并到游戏根目录，随后启动游戏。
+1. 退出雀魂，完成退出确认。
+2. 从 [Releases](https://github.com/ChildeRolando/majsoul_moqie/releases/tag/v0.3.0) 下载 `native-tsumogiri-0.3.0-installer.zip`，解压到任意目录。
+3. 双击 `install.cmd`。脚本自动从 Steam 库定位雀魂，下载已验收的 BepInEx IL2CPP x86 build 788，并安装加载器和插件。
+4. 正常启动雀魂即可。首次启动 BepInEx 会生成游戏接口，可能需要较长时间；以后随客户端自动加载。默认开启，F8 可开关。
 
-发行包只包含插件 DLL、说明和校验清单；BepInEx 运行环境须单独安装。已有设置不会被发行包覆盖。F8 的设置保存在 BepInEx/config/local.mahjongsoul.native-tsumogiri.cfg。
+不需要 .NET SDK 或 Python；支持 Windows 自带的 PowerShell 5.1。通常无需管理员权限；游戏目录无写入权限时，改用有权限的终端执行。脚本不会自动启动游戏。
+
+也可以在解压目录通过 PowerShell 执行：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+自动定位失败或检测到多份安装时，指定**包含 Jantama_MahjongSoul.exe 的游戏根目录**：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDirectory "D:\SteamLibrary\steamapps\common\MahjongSoul"
+```
+
+命令提示符中也可执行 `install.cmd -GameDirectory "D:\SteamLibrary\steamapps\common\MahjongSoul"`。使用 `-WhatIf` 可先预览目标，不下载或写入文件。
+
+脚本校验加载器压缩包、插件压缩包和 DLL 的 SHA256，只支持已验收的 x86 IL2CPP 客户端。重复安装保留已有设置和其他插件；同版本加载器文件直接复用。遇到不同版本或被修改的加载器会停止，不自动覆盖。替换旧版插件时会备份，写入失败会回滚本轮新增文件。下载和备份保留在终端显示的临时目录。
+
+当前仓库为私有仓库，需登录有访问权限的 GitHub 账户下载安装包。安装包已附带插件，不需要 GitHub CLI；若仅下载脚本而没有插件包，则需要登录 `gh auth login` 后运行，或用 `-PluginArchive` 指定已下载的原始发行包。BepInEx 从 [官方构建站](https://builds.bepinex.dev/projects/bepinex_be) 下载，需要联网；可提前下载匹配的 build 788，用以下命令离线安装：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDirectory "D:\SteamLibrary\steamapps\common\MahjongSoul" -LoaderArchive ".\BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.788+5b766a3.zip" -PluginArchive ".\native-tsumogiri-0.3.0-release.zip"
+```
+
+已有 F8 设置不会被重置，位于 BepInEx/config/local.mahjongsoul.native-tsumogiri.cfg。
+
+## 手动安装与卸载
+
+退出游戏，安装匹配的 BepInEx IL2CPP Windows x86 build 788。下载原始 `native-tsumogiri-0.3.0-release.zip`，将其中 BepInEx 目录合并到游戏根目录。原始发行包不包含加载器；一键安装脚本负责下载它。
 
 卸载时退出游戏，删除 BepInEx/plugins/NativeTsumogiri/MahjongSoulNative.dll；共享的 BepInEx 环境可以保留。
 
@@ -27,6 +58,8 @@ python -m pip install --target ./tools/python lupa
 python ./tests/test_native_tsumogiri.py
 dotnet run --project ./tests/SourcePatchChecks -- '<原始 buffer 目录>' './lua/native-tsumogiri.lua'
 ./build-package.ps1 -Tag '<新包标签>'
+# 安装器文件操作回归：使用真实的固定版本压缩包，在临时模拟游戏目录测试
+./tests/test_install.ps1 -LoaderArchive '<BepInEx 788 压缩包>' -PluginArchive './dist/native-tsumogiri-0.3.0-release.zip'
 ```
 
 SourcePatchChecks 使用本机诊断记录里的原始 ViewPai、Block_QiPai buffer；发行包不包含客户端 Lua 源码。重新构建的包需单独验收，不能继承现有 DLL 的人工验收。
