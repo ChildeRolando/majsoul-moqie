@@ -13,7 +13,7 @@
 先退出雀魂并完成退出确认，然后在 PowerShell 中粘贴这一行即可安装，**无需预先下载 Release、无需安装包管理器**：
 
 ```powershell
-irm https://raw.githubusercontent.com/ChildeRolando/majsoul_moqie/main/get.ps1 | iex
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/ChildeRolando/majsoul_moqie/main/install.ps1)))
 ```
 
 这一行从公开仓库运行安装脚本，自动定位 Steam 雀魂、下载并校验 BepInEx 和插件，再放入游戏目录。已有配置保留。若需要指定游戏目录：
