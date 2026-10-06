@@ -2,10 +2,11 @@
 
 版本 0.3.0，已在 Windows Steam 雀魂 4.0.35（Unity 2022.3.62f2c1、x86 IL2CPP）验收。
 
-直接沿用原生弃牌对象和摸切标记：普通摸切变灰，手切保持原样；鼠标高亮、立直横牌、鸣牌移除、下一局和窗口缩放沿用原生行为。牌谱回放保留客户端已有的摸切显示。
+直接沿用原生弃牌对象和摸切标记：普通摸切变灰，手切保持原样；立直横牌、鸣牌移除、下一局和窗口缩放沿用原生行为。牌谱回放保留客户端已有的摸切显示。
 
 - 默认开启；F8 开关并保存设置，重新开启会刷新已有弃牌。
-- F10 记录诊断快照。插件不读取屏幕、不模拟操作，不提供额外悬浮层。
+
+插件不读取屏幕、不模拟操作，不提供额外悬浮层。
 
 ## 一键安装
 
@@ -32,7 +33,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDirec
 
 脚本校验加载器压缩包、插件压缩包和 DLL 的 SHA256，只支持已验收的 x86 IL2CPP 客户端。重复安装保留已有设置和其他插件；同版本加载器文件直接复用。遇到不同版本或被修改的加载器会停止，不自动覆盖。替换旧版插件时会备份，写入失败会回滚本轮新增文件。下载和备份保留在终端显示的临时目录。
 
-当前仓库为私有仓库，需登录有访问权限的 GitHub 账户下载安装包。安装包已附带插件，不需要 GitHub CLI；若仅下载脚本而没有插件包，则需要登录 `gh auth login` 后运行，或用 `-PluginArchive` 指定已下载的原始发行包。BepInEx 从 [官方构建站](https://builds.bepinex.dev/projects/bepinex_be) 下载，需要联网；可提前下载匹配的 build 788，用以下命令离线安装：
+仓库和安装包公开下载，无需登录 GitHub，也不需要 GitHub CLI。安装包已附带插件；若仅下载脚本，脚本会自动下载插件包，也可用 `-PluginArchive` 指定已下载的原始发行包。BepInEx 从 [官方构建站](https://builds.bepinex.dev/projects/bepinex_be) 下载，需要联网；可提前下载匹配的 build 788，用以下命令离线安装：
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDirectory "D:\SteamLibrary\steamapps\common\MahjongSoul" -LoaderArchive ".\BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.788+5b766a3.zip" -PluginArchive ".\native-tsumogiri-0.3.0-release.zip"
