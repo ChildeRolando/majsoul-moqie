@@ -130,6 +130,20 @@ if ((Test-Path -LiteralPath $destination) -and ((Get-FileHash -LiteralPath $dest
 }
 $created = [Collections.Generic.List[string]]::new()
 $pluginWasPresent = Test-Path -LiteralPath $destination
+$configPath = Join-Path $GameDirectory 'BepInEx/config/BepInEx.cfg'
+$configWasPresent = Test-Path -LiteralPath $configPath
+$configText = if ($configWasPresent) { [IO.File]::ReadAllText($configPath) } else { '' }
+$consoleSection = [regex]::Match($configText, '(?ms)^\[Logging\.Console\][ \t]*(?:\r?\n|$)(?:(?!^\[).)*')
+if ($consoleSection.Success) {
+    $enabledPattern = '(?m)^Enabled[ \t]*=[^\r\n]*'
+    $sectionText = if ([regex]::IsMatch($consoleSection.Value, $enabledPattern)) {
+        [regex]::Replace($consoleSection.Value, $enabledPattern, 'Enabled = false')
+    } else { $consoleSection.Value + "`r`nEnabled = false`r`n" }
+    $updatedConfig = $configText.Substring(0, $consoleSection.Index) + $sectionText + $configText.Substring($consoleSection.Index + $consoleSection.Length)
+} else { $updatedConfig = $configText + "`r`n[Logging.Console]`r`nEnabled = false`r`n" }
+$configBackup = Join-Path $work 'previous-BepInEx.cfg'
+if ($configWasPresent) { Copy-Item -LiteralPath $configPath -Destination $configBackup }
+$configWriteStarted = $false
 Assert-Stopped
 try {
     foreach ($item in $plan) {
@@ -141,12 +155,23 @@ try {
     New-Item -ItemType Directory -Path (Split-Path -Parent $destination) -Force | Out-Null
     Copy-Item -LiteralPath (Join-Path $plugin $relativeDll) -Destination $destination -Force
     Assert-Hash $destination $dllHash
+    New-Item -ItemType Directory -Path (Split-Path -Parent $configPath) -Force | Out-Null
+    $configWriteStarted = $true
+    [IO.File]::WriteAllText($configPath, $updatedConfig, [Text.UTF8Encoding]::new($false))
 } catch {
     foreach ($path in $created) { if (Test-Path -LiteralPath $path) { Remove-Item -LiteralPath $path -Force } }
     if ($backup) { Copy-Item -LiteralPath $backup -Destination $destination -Force }
     elseif (-not $pluginWasPresent -and (Test-Path -LiteralPath $destination)) { Remove-Item -LiteralPath $destination -Force }
+    if ($configWriteStarted) {
+        if ($configWasPresent) {
+            if (-not (Test-Path -LiteralPath $configPath) -or (Get-FileHash -LiteralPath $configPath).Hash -ne (Get-FileHash -LiteralPath $configBackup).Hash) {
+                Copy-Item -LiteralPath $configBackup -Destination $configPath -Force
+            }
+        } elseif (Test-Path -LiteralPath $configPath) { Remove-Item -LiteralPath $configPath -Force }
+    }
     throw
 }
-Write-Host 'Installed. Start Mahjong Soul normally. F8 toggles the plugin; existing settings are preserved.'
+Write-Host 'Installed. Start Mahjong Soul normally. F8 toggles the plugin. The startup log console is hidden; other settings are preserved.'
 if ($backup) { Write-Host "Previous plugin backup: $backup" }
+if ($configWasPresent) { Write-Host "Previous BepInEx config backup: $configBackup" }
 # Keep the bounded temporary directory for download reuse and failure diagnosis.

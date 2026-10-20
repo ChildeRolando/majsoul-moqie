@@ -5,6 +5,7 @@
 直接沿用原生弃牌对象和摸切标记：普通摸切变灰，手切保持原样；立直横牌、鸣牌移除、下一局和窗口缩放沿用原生行为。牌谱回放保留客户端已有的摸切显示。
 
 - 默认开启；F8 开关并保存设置，重新开启会刷新已有弃牌。
+- 安装脚本默认隐藏游戏启动时的 BepInEx 日志窗口，文件日志仍保留。已安装用户退出游戏后重新运行下方安装脚本即可应用。
 
 插件不读取屏幕、不模拟操作，不提供额外悬浮层。
 
@@ -16,7 +17,7 @@
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/ChildeRolando/majsoul_moqie/main/install.ps1)))
 ```
 
-这一行从公开仓库运行安装脚本，自动定位 Steam 雀魂、下载并校验 BepInEx 和插件，再放入游戏目录。已有配置保留。若需要指定游戏目录：
+这一行从公开仓库运行安装脚本，自动定位 Steam 雀魂、下载并校验 BepInEx 和插件，再放入游戏目录。隐藏启动日志窗口，其他已有配置保留。若需要指定游戏目录：
 
 ```powershell
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/ChildeRolando/majsoul_moqie/main/install.ps1))) -GameDirectory "D:\SteamLibrary\steamapps\common\MahjongSoul"
@@ -47,7 +48,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDirec
 
 命令提示符中也可执行 `install.cmd -GameDirectory "D:\SteamLibrary\steamapps\common\MahjongSoul"`。使用 `-WhatIf` 可先预览目标，不下载或写入文件。
 
-脚本校验加载器压缩包、插件压缩包和 DLL 的 SHA256，只支持已验收的 x86 IL2CPP 客户端。重复安装保留已有设置和其他插件；同版本加载器文件直接复用。遇到不同版本或被修改的加载器会停止，不自动覆盖。替换旧版插件时会备份，写入失败会回滚本轮新增文件。下载和备份保留在终端显示的临时目录。
+脚本校验加载器压缩包、插件压缩包和 DLL 的 SHA256，只支持已验收的 x86 IL2CPP 客户端。重复安装关闭日志控制台，保留其他已有设置和其他插件；同版本加载器文件直接复用。修改前会备份 BepInEx 配置，替换旧版插件时也会备份，写入失败会回滚本轮新增文件并恢复配置和插件。遇到不同版本或被修改的加载器会停止，不自动覆盖。下载和备份保留在终端显示的临时目录。
 
 仓库和安装包公开下载，无需登录 GitHub，也不需要 GitHub CLI。安装包已附带插件；若仅下载脚本，脚本会自动下载插件包，也可用 `-PluginArchive` 指定已下载的原始发行包。BepInEx 从 [官方构建站](https://builds.bepinex.dev/projects/bepinex_be) 下载，需要联网；可提前下载匹配的 build 788，用以下命令离线安装：
 
@@ -56,6 +57,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -GameDirec
 ```
 
 已有 F8 设置不会被重置，位于 BepInEx/config/local.mahjongsoul.native-tsumogiri.cfg。
+
+启动日志窗口由 BepInEx/config/BepInEx.cfg 中的 `[Logging.Console]` → `Enabled = false` 控制；需要排查问题时可改为 `true`，下次启动生效。文件日志仍由 `[Logging.Disk]` 控制，安装脚本不修改该设置。现有 v0.3.0 Release 的 EXE 和 ZIP 内嵌旧版安装脚本；隐藏窗口请使用本页的一行 PowerShell 安装命令，或直接修改该配置。
 
 ## 手动安装与卸载
 

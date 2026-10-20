@@ -16,6 +16,8 @@ function New-Game([string]$Name) {
 function Assert-Installed([string]$Game) {
     $file = Join-Path $Game 'BepInEx/plugins/NativeTsumogiri/MahjongSoulNative.dll'
     if ((Get-FileHash -LiteralPath $file).Hash -ne '6DDD98C1643A42D0AE8D448929556177A236091144D4764C60E6B2D85B96E78D') { throw 'Installed DLL differs.' }
+    $config = [IO.File]::ReadAllText((Join-Path $Game 'BepInEx/config/BepInEx.cfg'))
+    if ($config -notmatch '(?m)^Enabled = false\r?$') { throw 'Installer entry point shows console.' }
 }
 # ScriptBlock.Create has no source directory, like the one-line remote command.
 $remoteGame = New-Game 'remote block'
