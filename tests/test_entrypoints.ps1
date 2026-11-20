@@ -15,7 +15,7 @@ function New-Game([string]$Name) {
 }
 function Assert-Installed([string]$Game) {
     $file = Join-Path $Game 'BepInEx/plugins/NativeTsumogiri/MahjongSoulNative.dll'
-    if ((Get-FileHash -LiteralPath $file).Hash -ne '6DDD98C1643A42D0AE8D448929556177A236091144D4764C60E6B2D85B96E78D') { throw 'Installed DLL differs.' }
+    if ((Get-FileHash -LiteralPath $file).Hash -ne '738C693115F998B156FFC81665298200C688635C2418DF6481C1D6703135A32E') { throw 'Installed DLL differs.' }
     $config = [IO.File]::ReadAllText((Join-Path $Game 'BepInEx/config/BepInEx.cfg'))
     if ($config -notmatch '(?m)^Enabled = false\r?$') { throw 'Installer entry point shows console.' }
 }
@@ -26,7 +26,7 @@ $body = [IO.File]::ReadAllText((Join-Path $root 'install.ps1'))
 Assert-Installed $remoteGame
 # Exercise argument forwarding (spaces and non-ASCII) and embedded script.
 $exeGame = New-Game ('exe ' + [char]0x96c0)
-$exe = Join-Path $root 'dist/majsoul_moqie-setup-0.3.0.exe'
+$exe = Join-Path $root 'dist/majsoul_moqie-setup-0.3.1.exe'
 & $exe -GameDirectory $exeGame -LoaderArchive $LoaderArchive -PluginArchive $PluginArchive
 if ($LASTEXITCODE -ne 0) { throw 'EXE install failed.' }
 Assert-Installed $exeGame

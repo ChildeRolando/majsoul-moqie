@@ -4,10 +4,10 @@ param([string]$GameDirectory, [string]$LoaderArchive, [string]$PluginArchive)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $loaderHash = 'D5954A5993EC39CD1133603D85BFF93875D30B6411B712CC13DCF03C8E08A4D3'
-$packageHash = '16E809D044EDE9E3ADBAAF5043E3A27EBA0805D5354990503431E46A439A5D5D'
-$dllHash = '6DDD98C1643A42D0AE8D448929556177A236091144D4764C60E6B2D85B96E78D'
+$packageHash = '5758AA91793F7780EF62464AFD8433C49245D3227999C72A9762F97536B858F1'
+$dllHash = '738C693115F998B156FFC81665298200C688635C2418DF6481C1D6703135A32E'
 $loaderUrl = 'https://builds.bepinex.dev/projects/bepinex_be/788/BepInEx-Unity.IL2CPP-win-x86-6.0.0-be.788%2B5b766a3.zip'
-$assetName = 'native-tsumogiri-0.3.0-release.zip'
+$assetName = 'native-tsumogiri-0.3.1-release.zip'
 
 function Find-Game {
     $roots = @()
@@ -98,7 +98,7 @@ if (-not $PluginArchive) {
     }
     if (-not (Test-Path -LiteralPath $PluginArchive)) {
         $PluginArchive = Join-Path $work $assetName
-        Invoke-WebRequest -Uri ('https://github.com/ChildeRolando/majsoul_moqie/releases/download/v0.3.0/' + $assetName) -OutFile $PluginArchive -UseBasicParsing -TimeoutSec 120
+        Invoke-WebRequest -Uri ('https://github.com/ChildeRolando/majsoul-moqie/releases/download/v0.3.1/' + $assetName) -OutFile $PluginArchive -UseBasicParsing -TimeoutSec 120
     }
 }
 Assert-Hash $LoaderArchive $loaderHash

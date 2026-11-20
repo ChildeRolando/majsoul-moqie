@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace MahjongSoulNative;
 
-[BepInPlugin("local.mahjongsoul.native-tsumogiri", "Native Tsumogiri", "0.3.0")]
+[BepInPlugin("local.mahjongsoul.native-tsumogiri", "Native Tsumogiri", "0.3.1")]
 public sealed class Plugin : BasePlugin
 {
     private static Plugin? instance;

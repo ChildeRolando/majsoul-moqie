@@ -1,3 +1,19 @@
+# 0.3.1 验收记录
+
+2026-11-20 在 Windows Steam 雀魂 4.0.41（Steam build `26802421`、Unity 2022.3.62f2c1、x86 IL2CPP、BepInEx build 788）实测。
+
+- 通过 Steam 启动，BepInEx 自动加载 `Native Tsumogiri 0.3.1`。日志确认两个新版模块均通过原始内容校验并应用补丁，Lua 返回 `enabled=true` 的显示状态。启动控制台配置保持关闭。
+- 旧 build `25476613` 和新 build `26802421` 均使用现场捕获的原始模块通过补丁回归，包括绑定对象与摸切标志、未知哈希和重复补丁防护。旧 build 本次只做原始模块回归，实机记录见下方。
+- .NET Release 构建零警告、零错误。LuaJIT 行为回归和 Windows PowerShell 5.1 安装回归通过，覆盖摸切与手切区分、F8 刷新、对象回收、重复安装和失败回滚。
+- 用户在实机牌桌目视确认摸切显示正常。同一局的运行日志记录了实时弃牌进入显示逻辑，F8 关闭和重新开启各刷新了 20 张当前弃牌，测试结束时显示处于开启状态。
+
+发行 DLL SHA256：`738C693115F998B156FFC81665298200C688635C2418DF6481C1D6703135A32E`
+
+新版模块原始 SHA256：
+
+- `ViewPai`：`9ca196d20456c0c6bed438cdf7b4da6d02f3deed491151c011f71bca1db821ca`
+- `Block_QiPai`：`44d2f901f9016679c5d8eb99d5beacab661d7ee5fa76b5f18a264807214d635d`
+
 # 0.3.0 验收记录
 
 验收环境：Windows Steam 雀魂 4.0.35，Steam build 25476613，Unity 2022.3.62f2c1，x86 IL2CPP，BepInEx build 788。现场验收完成于 2026-10-06。

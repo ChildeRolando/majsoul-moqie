@@ -17,6 +17,8 @@ function New-Game([string]$Name, [int]$Machine = 0x14c) {
 function Run-Install([string]$Game, [bool]$Success, [string]$Package = $PluginArchive, [switch]$Preview) {
     $arguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $installer, '-GameDirectory', $Game, '-LoaderArchive', $LoaderArchive, '-PluginArchive', $Package)
     if ($Preview) { $arguments += '-WhatIf' }
+    # PowerShell 5.1 turns redirected native stderr into error records. Check the child exit code.
+    $ErrorActionPreference = 'Continue'
     $output = & powershell.exe @arguments 2>&1
     if (($LASTEXITCODE -eq 0) -ne $Success) { throw "Unexpected installation result: $output" }
 }
@@ -25,7 +27,7 @@ Run-Install $game $true -Preview
 if (Test-Path -LiteralPath (Join-Path $game 'BepInEx')) { throw 'WhatIf wrote game files' }
 Run-Install $game $true
 $dll = Join-Path $game 'BepInEx/plugins/NativeTsumogiri/MahjongSoulNative.dll'
-if ((Get-FileHash -LiteralPath $dll).Hash -ne '6DDD98C1643A42D0AE8D448929556177A236091144D4764C60E6B2D85B96E78D') { throw 'DLL mismatch' }
+if ((Get-FileHash -LiteralPath $dll).Hash -ne '738C693115F998B156FFC81665298200C688635C2418DF6481C1D6703135A32E') { throw 'DLL mismatch' }
 $loaderConfig = Join-Path $game 'BepInEx/config/BepInEx.cfg'
 if ([IO.File]::ReadAllText($loaderConfig) -notmatch '(?m)^Enabled = false\r?$') { throw 'Fresh install shows console' }
 $config = Join-Path $game 'BepInEx/config/keep.cfg'
